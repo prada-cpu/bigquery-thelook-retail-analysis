@@ -1,6 +1,6 @@
 # Retail analysis on BigQuery: TheLook eCommerce
 
-I built this project to learn BigQuery by answering real business questions with SQL. I already knew SQL, so I focused on what is specific to BigQuery: how it handles cost, how its tables are named, and how its SQL differs from what I'd used before.
+I built this project to learn BigQuery by answering practical business questions with SQL. I already knew SQL, so I focused on what is specific to BigQuery: how it handles cost, how its tables are named, and how its SQL differs from what I'd used before.
 
 I'm a BI analyst building my skills in BigQuery and cloud data warehousing. I chose a retail dataset because retail questions (growth, margins, returns, customer loyalty) are the ones businesses ask most, and I wanted to practice answering them end to end: checking the data, defining the metrics, and explaining what I found.
 
@@ -72,6 +72,20 @@ I'm treating the seasonal pattern as consistent in this data, not as proven. It 
 **Is it one bad brand?** No. I looked at the top 10 brands in Jeans and in Tops & Tees. Every Jeans brand sits between 45.6% and 47.5%, and every Tops & Tees brand between 43.1% and 45.0%, even though Jeans prices range from about $45 to $245 per item. The low margin is category-wide, and it looks like margin is set at category level in this data.
 
 **What I'd look at.** Because it isn't one brand, dropping a brand wouldn't help. The question is whether Jeans pricing or sourcing costs can improve. Each extra point of Jeans margin is worth about $6.4k in this data, so the opportunity is real but modest.
+
+## Question 3: findings
+
+**Overall.** About 15% of fulfilled items were returned, and 15.0% of all ordered items were cancelled. This represents approximately 18,039 returned items out of 117,800 fulfilled items. Returns accounted for roughly $967k in sales value.
+
+**Category-level analysis.** Returns and cancellations are spread fairly evenly across the 26 categories. Return rates were between 14.0% and 16.3% for 24 categories, close to the overall rate of 15%.
+
+**Do weak-margin categories also have higher returns?** No. Jeans (15.2%), Tops & Tees (14.7%), Intimates (15.7%) and Fashion Hoodies & Sweatshirts (15.2%) all have return rates close to the average. This means returns don't appear to make the margin problem identified in Question 2 worse.
+
+**Brand-level analysis.** I also compared brands with at least 500 fulfilled items to avoid drawing conclusions from very small samples. Dickies had the highest return rate at 18.3%, followed by Diesel at 17.5%. However, neither provides enough evidence to establish a meaningful brand-specific problem. The remaining brands were also relatively close to the overall rate.
+
+**What I'd look at.** Neither category nor brand appears to explain the return and cancellation rates. Rather than targeting individual products or brands, I'd investigate broader operational factors behind returns and cancellations.
+
+**Data interpretation.** The rates are unusually consistent across categories and brands. Given that this is synthetic data, the uniformity may reflect how returns and cancellations were generated rather than actual retail behaviour. These findings should be treated as an analytical exercise, not evidence that a real retailer would have the same patterns.
 
 ## A data issue I found
 
