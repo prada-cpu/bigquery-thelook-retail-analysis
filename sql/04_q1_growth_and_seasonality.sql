@@ -2,11 +2,13 @@
 -- Question 1: Is the business growing, and is there seasonality?
 -- ============================================================
 
+-- 1a. Monthly revenue, number of orders, average order value, margin %, and
+-- how much revenue changed from the previous month.
+-- What I found: revenue grew steadily until January 2026, then picked up
+-- speed from February 2026 (item growth went from roughly 4% to 9% a
+-- month). Margin stayed around 52%, so the growth came from selling more,
+-- not from earning more per sale.
 
--- 1a. Monthly revenue, orders, AOV, margin % and month-over-month growth.
--- Finding: steady growth to Jan 2026, then faster from Feb 2026 (monthly
--- item growth roughly 4% -> 9%). Margin stable at about 52%, so growth is
--- driven by volume, not by higher margins.
 WITH monthly AS (
   SELECT
     order_month,
@@ -31,13 +33,14 @@ SELECT
 FROM monthly
 ORDER BY order_month;
 
+-- 1b. Status mix by month since June 2025. I didn't use the in_window filter
+-- here on purpose, so the October spike is still visible.
+-- I wanted to check whether the faster growth was real or just caused by
+-- counting Shipped orders as revenue.
+-- What I found: the mix stayed about the same (roughly 25% Complete, 31%
+-- Shipped, 20% Processing, 10% Returned, 15% Cancelled), so the growth is
+-- real.
 
--- 1b. Status mix by month since Jun 2025 (deliberately NOT filtered by
--- in_window, so the October surge is visible).
--- Finding: the mix of statuses is stable (about 25% Complete, 31% Shipped,
--- 20% Processing, 10% Returned, 15% Cancelled), so counting Shipped as
--- revenue does not distort the trend, and the Feb 2026 acceleration is a
--- genuine rise in order volume.
 SELECT
   order_month,
   COUNTIF(status = 'Complete') AS complete_items,
@@ -51,10 +54,11 @@ GROUP BY order_month
 ORDER BY order_month;
 
 
--- 1c. Seasonality index: each calendar month vs. its own year's average,
--- averaged over the complete years 2020-2025.
--- Caveat: the business grows through each year, so later months score
--- higher regardless of season. Read this together with 1d.
+-- 1c. Seasonality check 1: compares each calendar month to the average of
+-- its own year, then averages that over the full years 2020 to 2025.
+-- Limitation: the business keeps growing through the year, so later months
+-- score higher no matter what. That's why I added the next check.
+
 WITH monthly AS (
   SELECT order_month, SUM(sale_price) AS revenue
   FROM `YOUR_PROJECT_ID.thelook_analysis.vw_order_items_enriched`
@@ -76,13 +80,15 @@ FROM with_year
 GROUP BY mth
 ORDER BY mth;
 
+-- 1d. Seasonality check 2: compares each month to the average of the month
+-- before and the month after. Steady growth cancels out, so only real
+-- spikes and dips show.
+-- What I found: October is the clearest spike (1.118) and February is the
+-- weakest (0.911). September doesn't spike (0.92).
+-- Limitation: a month sitting next to a spike (like September and November
+-- around October) can look like a dip just because of how this is
+-- calculated.
 
--- 1d. Spike index: each month vs. the average of the month before and
--- after, which cancels out a steady growth trend.
--- Finding: October is the clearest spike (1.118), February the weakest
--- period (0.911). No September spike (0.92).
--- Caveat: a dip beside a spike (Sep and Nov around Oct) is partly an
--- artifact of the method.
 WITH monthly AS (
   SELECT order_month, SUM(sale_price) AS revenue
   FROM `YOUR_PROJECT_ID.thelook_analysis.vw_order_items_enriched`
@@ -107,11 +113,13 @@ GROUP BY mth
 ORDER BY mth;
 
 
--- 1e. September, year by year, using the same neighbor logic as 1d.
--- Finding: every year 2020-2025 scores below 1.00 (0.83 to 0.98), so there
--- is no consistent September spike. 2019 (1.242) is not meaningful because
--- the business was tiny and growing very fast. 2026 is null because there
--- is no October inside the window.
+-- 1e. I thought I saw a September spike on the chart, so I checked
+-- September year by year using the same method as 1d.
+-- What I found: every year from 2020 to 2025 came in below 1.00 (between
+-- 0.83 and 0.98), so there's no consistent September spike. 2019 (1.242)
+-- doesn't count because the business was tiny and growing very fast. 2026
+-- is empty because there's no October inside the window to compare against.
+
 WITH monthly AS (
   SELECT order_month, SUM(sale_price) AS revenue
   FROM `YOUR_PROJECT_ID.thelook_analysis.vw_order_items_enriched`
@@ -126,15 +134,15 @@ FROM monthly
 QUALIFY EXTRACT(MONTH FROM order_month) = 9
 ORDER BY order_month;
 
+-- 1f. Daily orders from mid-September 2026. I didn't use the in_window
+-- filter here on purpose. October 2026 was 79% higher than September, and
+-- I wanted to see why.
+-- What I found: daily volume climbed gradually until 22 October (about 265
+-- to about 350 items a day), then shot up from 23 October and peaked at
+-- 1,764 items on 28 October before dropping back. Those 9 days make up
+-- about half of October. It doesn't look like normal customer behaviour,
+-- so I treated it as a likely data issue and left it out using in_window.
 
--- 1f. Daily volume from mid-September 2026 (deliberately NOT filtered by
--- in_window). Used to investigate why October 2026 jumped 79% over
--- September.
--- Finding: volume rises gradually through 22 Oct (about 265 -> about 350
--- items a day), then surges from 23 Oct, peaking at 1,764 items on 28 Oct,
--- before falling back. These 9 days hold about half of October's items, and
--- the build-up-and-decay shape does not look like customer behaviour. It is
--- treated as a probable data-generation artifact and excluded via in_window.
 SELECT
   order_date,
   COUNT(*) AS items,
