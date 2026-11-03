@@ -41,8 +41,8 @@ I defined these once, inside the view (`sql/03_view_order_items_enriched.sql`), 
 | # | Question | Status |
 |---|---|---|
 | 1 | Is the business growing, and is there a seasonal pattern? | Done |
-| 2 | Which categories and brands look strong on revenue but weak on margin? | In progress |
-| 3 | Where are returns and cancellations hurting most? | Planned |
+| 2 | Which categories and brands look strong on revenue but weak on margin? | Done |
+| 3 | Where are returns and cancellations hurting most? | Done |
 | 4 | Which traffic sources bring the most valuable customers? | Planned |
 | 5 | Do customers come back, and does it differ by when they joined? | Planned |
 
