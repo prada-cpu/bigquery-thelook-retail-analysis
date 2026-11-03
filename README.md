@@ -29,7 +29,7 @@ The dataset gets refreshed over time, so the row counts and the latest date can 
 
 ## The rules I set
 
-I defined these once, inside the view (`sql/06_view_order_items_enriched.sql`), so every query uses the same definitions.
+I defined these once, inside the view (`sql/03_view_order_items_enriched.sql`), so every query uses the same definitions.
 
 - **Revenue** counts only items with status **Complete** or **Shipped**. Processing items haven't shipped yet, Cancelled items never happened, and Returned items were refunded.
 - **Margin** is the sale price minus the product's cost, per item. I used the cost from the products table.
