@@ -61,6 +61,18 @@ I defined these once, inside the view (`sql/03_view_order_items_enriched.sql`), 
 
 I'm treating the seasonal pattern as consistent in this data, not as proven. It is six years of synthetic data.
 
+## Question 2: findings
+
+**Overall.** Margin across all categories is 51.9%, and individual categories range from about 38% to 62%.
+
+**Strong on both.** Outerwear & Coats is the biggest category (12.1% of revenue) and has a healthy 55.5% margin. Suits & Sport Coats is 4th on both revenue and margin.
+
+**Big on revenue, weak on margin.** Jeans is the main one. It's the second-biggest category (11.8% of revenue) but ranks 21st of 26 on margin at 46.5%, which is 5.4 points below average. If Jeans earned the average margin, it would add about $35k, roughly 1.2% of total margin. Tops & Tees (44.0%), Intimates (46.8%) and Fashion Hoodies & Sweatshirts (48.0%) are smaller versions of the same pattern.
+
+**Is it one bad brand?** No. I looked at the top 10 brands in Jeans and in Tops & Tees. Every Jeans brand sits between 45.6% and 47.5%, and every Tops & Tees brand between 43.1% and 45.0%, even though Jeans prices range from about $45 to $245 per item. The low margin is category-wide, and it looks like margin is set at category level in this data.
+
+**What I'd look at.** Because it isn't one brand, dropping a brand wouldn't help. The question is whether Jeans pricing or sourcing costs can improve. Each extra point of Jeans margin is worth about $6.4k in this data, so the opportunity is real but modest.
+
 ## A data issue I found
 
 October 2026 had 79% more items than September, far more than any other month-to-month change. Looking at it day by day, volume climbed gradually until 22 October, then shot up from 23 October and peaked at 1,764 items on 28 October (about five times a normal day) before dropping back. Those nine days hold about half of October's items.
