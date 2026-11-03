@@ -1,19 +1,23 @@
--- Purpose: Analysis layer. Joins order items to products and users once, so
---          every later query is a simple SELECT with no joins.
--- Setup:   Create a dataset named thelook_analysis in the US location (it
---          must match the public dataset's location), then replace
---          YOUR_PROJECT_ID with your own project ID.
+-- This view joins order items to products and users once, so my later
+-- queries don't need to repeat the joins.
 --
--- Metric definitions (all defined here, in one place):
---   is_revenue : status is Complete or Shipped. Processing, Cancelled and
---                Returned are excluded.
---   margin     : sale_price minus products.cost, per item.
---   in_window  : 2019-02-01 to 2026-09-30. Excludes the partial first month
---                (Jan 2019), the partial last month (Nov 2026), and an
---                unexplained surge of orders from 23 Oct 2026 onward.
+-- Setup: create a dataset called thelook_analysis in the US location (it
+-- has to match where the public data is stored), then replace
+-- YOUR_PROJECT_ID with your own project ID.
 --
--- Validation: 180,746 rows (same as order_items), 166,541 inside the window,
---             0 null categories, costs or traffic sources.
+-- Rules I set up here so they're defined in one place:
+--   is_revenue: only Complete and Shipped items count as revenue.
+--               Processing, Cancelled and Returned don't.
+--   margin:     sale price minus the product's cost, per item.
+--   in_window:  only 2019-02-01 to 2026-09-30. I left out January 2019 and
+--               November 2026 because those months are incomplete, and the
+--               late-October 2026 spike because it looked unusual (I explain
+--               it in the Question 1 file).
+--
+-- Check: the view has 180,746 rows, the same as order_items, and 166,541 of
+-- them are inside the window. No missing categories, costs or traffic
+-- sources.
+
 
 CREATE OR REPLACE VIEW `YOUR_PROJECT_ID.thelook_analysis.vw_order_items_enriched` AS
 SELECT
