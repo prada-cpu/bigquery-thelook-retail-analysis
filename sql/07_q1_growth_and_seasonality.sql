@@ -1,6 +1,5 @@
 -- ============================================================
 -- Question 1: Is the business growing, and is there seasonality?
--- Replace YOUR_PROJECT_ID with your own project ID.
 -- ============================================================
 
 
