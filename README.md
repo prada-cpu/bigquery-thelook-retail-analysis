@@ -2,7 +2,7 @@
 
 I built this project to learn BigQuery by answering real business questions with SQL. I already knew SQL, so I focused on what is specific to BigQuery: how it handles cost, how its tables are named, and how its SQL differs from what I'd used before.
 
-I'm a BI analyst building my skills in BigQuery and cloud data warehousing. I chose a retail dataset because retail questions (growth, margins, returns, customer loyalty) are the ones businesses ask most, and I wanted to practise answering them end to end: checking the data, defining the metrics, and explaining what I found.
+I'm a BI analyst building my skills in BigQuery and cloud data warehousing. I chose a retail dataset because retail questions (growth, margins, returns, customer loyalty) are the ones businesses ask most, and I wanted to practice answering them end to end: checking the data, defining the metrics, and explaining what I found.
 
 ## The data
 
