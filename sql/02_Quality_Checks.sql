@@ -1,17 +1,18 @@
--- Purpose: Find the time span of the data and spot partial months, which
---          look like false dips in monthly trends.
--- Result (2 Nov 2026): 2019-01-14 to 2026-10-29 at the time of the query.
---          The dataset refreshes over time, so the end date can move.
+-- I wanted to know what dates the data covers. The first and last months
+-- can be incomplete, which makes them look like a drop in sales when
+-- they aren't.
+-- What I found: 14 Jan 2019 to 29 Oct 2026 when I ran it. The dataset gets
+-- refreshed, so the end date can change.
 
 SELECT
   MIN(created_at) AS first_order,
   MAX(created_at) AS last_order
 FROM `bigquery-public-data.thelook_ecommerce.orders`;
 
--- Purpose: List order item statuses and their share, to decide which
---          statuses count as revenue.
--- Result: Shipped 30.0% | Complete 25.2% | Processing 19.8%
---         | Cancelled 15.0% | Returned 10.0%
+-- I wanted to see what statuses an order item can have and how common each
+-- one is, so I could decide which ones count as real revenue.
+-- What I found: Shipped 30.0%, Complete 25.2%, Processing 19.8%,
+-- Cancelled 15.0%, Returned 10.0%.
 
 SELECT
   status,
@@ -22,11 +23,12 @@ GROUP BY status
 ORDER BY item_count DESC;
 
 
--- Purpose: Check order_items for duplicate rows, missing keys, and invalid
---          prices, which silently distort revenue totals.
--- Result: 180,746 rows, 180,746 distinct ids, 0 nulls in order_id,
---         product_id and sale_price, 0 non-positive prices.
-
+-- I checked order_items for repeated rows, missing values and bad prices
+-- before trusting any totals, because any of these would quietly throw
+-- off revenue.
+-- What I found: no repeated rows (180,746 rows and 180,746 unique ids),
+-- no missing order_id, product_id or sale_price, and no prices at zero
+-- or below.
 SELECT
   COUNT(*) AS total_rows,
   COUNT(DISTINCT id) AS distinct_ids,
@@ -36,11 +38,10 @@ SELECT
   COUNTIF(sale_price <= 0) AS non_positive_price
 FROM `bigquery-public-data.thelook_ecommerce.order_items`;
 
--- Purpose: Confirm every order item links to an order and a product, and
---          that the joins do not change the row count (no fan-out).
--- Result: 180,746 rows after joining, 0 items without an order,
---         0 items without a product.
-
+-- I checked that every order item matches a real order and a real product,
+-- and that joining the tables doesn't change the number of rows.
+-- What I found: still 180,746 rows after joining, and no items without a
+-- matching order or product.
 SELECT
   COUNT(*) AS total_items,
   COUNTIF(o.order_id IS NULL) AS items_without_order,
